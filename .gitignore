@@ -1,0 +1,15 @@
+node_modules/
+.env
+*.log
+npm-debug.log*
+
+# Prisma
+prisma/migrations/dev.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

@@ -1,0 +1,47 @@
+// Prisma schema for Student Progress Management API
+// Database: MySQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Student {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  email     String    @unique @db.VarChar(255)
+  phone     String?   @db.VarChar(50)
+  major     String?   @db.VarChar(255)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  progresses Progress[]
+
+  @@map("students")
+}
+
+model Progress {
+  id         Int            @id @default(autoincrement())
+  studentId  Int            @map("student_id")
+  subject    String         @db.VarChar(255)
+  status     ProgressStatus @default(NOT_STARTED)
+  note       String?        @db.Text
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, subject], name: "student_subject_unique")
+  @@index([status])
+  @@map("progresses")
+}
